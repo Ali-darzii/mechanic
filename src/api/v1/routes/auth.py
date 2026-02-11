@@ -65,7 +65,7 @@ async def logout(
 
 @router.post("/reset-password", status_code=status.HTTP_200_OK)
 @limiter.limit("5/minute")
-async def send_email_otp_reset_password(
+async def send_otp_reset_password(
     request: Request,
     reset_password: ResetPaasword,
     service: AuthService = Depends()

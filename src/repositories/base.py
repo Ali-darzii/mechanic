@@ -95,7 +95,7 @@ class SqlRepository(ISqlRepository):
         result = await self.db.execute(select(self.model).where(self.model.id == pk))
         return result.scalar_one_or_none()
     
-    async def list_all(self, limit=100, offset=0):
+    async def list_all(self, limit, offset):
         result = await self.db.execute(select(self.model).limit(limit).offset(offset))
         return result.scalars().all()
 

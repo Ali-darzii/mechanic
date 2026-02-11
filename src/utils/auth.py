@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 from uuid import uuid4
-from typing import Any, Dict
+from typing import Any, Dict, List
 import jwt as pyjwt
 from datetime import datetime, timedelta, timezone
 
@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from src.repositories.user import UserRepository
 from src.schemas.auth import TokenType
-from src.models.user import User as UserModel
+from src.models.user import User as UserModel, UserRole
 from src.config import setting
 from src.utils.singleton import SingletonMeta
 
@@ -88,5 +88,22 @@ async def get_current_user(
         raise jwt.INVALID_TOKEN
     
     return user
+
+def get_current_user_with_permission(permission: List[UserRole]):
+    
+    async def _wrapper(user: UserModel = Depends(get_current_user)):
+        if user.role == UserRole.admin:
+            return user
+        
+        if user.role not in permission:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Permission denied."
+            )
+
+        return user
+
+    return _wrapper
+
 
 jwt = Jwt()
