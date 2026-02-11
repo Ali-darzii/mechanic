@@ -13,6 +13,7 @@ router = APIRouter(
 
 
 @router.post("/send-otp", status_code=status.HTTP_200_OK)
+@limiter.limit("5/minute")
 async def signup_send_otp(
     request: Request,
     signup: SignupSendOTP,
@@ -21,6 +22,7 @@ async def signup_send_otp(
     await service.signup_send_otp(signup)
 
 @router.put("/send-otp", response_model=TokenOut, status_code=status.HTTP_200_OK)
+@limiter.limit("5/minute")
 async def signup_verify_otp(
     request: Request,
     signup: SignupVerifyOTP,
@@ -30,7 +32,7 @@ async def signup_verify_otp(
 
 
 @router.post("/token", response_model=TokenOut, status_code=status.HTTP_200_OK)
-@limiter.limit("10/minute")
+@limiter.limit("3/minute")
 async def login(
     request: Request,
     login: Login,

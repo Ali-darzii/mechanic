@@ -38,8 +38,8 @@ class SignupSendOTP(BaseModel):
     
 
 class SignupVerifyOTP(BaseModel):
-    phone_number: int
-    token: int = Field(..., max_length=6, min_length=6)
+    phone_number: str
+    token: int
 
 
 
@@ -51,7 +51,7 @@ class TokenType(str, Enum):
 class TokenOut(BaseModel):
     access_token: str
     refresh_token: str
-    user_id: str
+    user_id: int
 
 
 class CreateRevokeToken(BaseModel):

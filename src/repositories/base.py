@@ -70,8 +70,10 @@ class SqlRepository(ISqlRepository):
         
         self.db.add(db_obj)
         await self.db.commit()
-        return await self.db.refresh(db_obj)
-    
+        await self.db.refresh(db_obj)
+        
+        return db_obj
+
     async def update(self, db_obj, schema, partial):
         update_data = schema.model_dump(exclude_unset=partial)
 
@@ -79,10 +81,12 @@ class SqlRepository(ISqlRepository):
             if hasattr(db_obj, field):
                 setattr(db_obj, field, value)
 
-            self.db.add(db_obj)
-            await self.db.commit()
-            return await self.db.refresh(db_obj)
+        self.db.add(db_obj)
+        await self.db.commit()
+        await self.db.refresh(db_obj)
         
+        return db_obj
+
     async def delete(self, db_obj):
         await self.db.delete(db_obj)
         await self.db.commit()

@@ -53,7 +53,7 @@ class AuthService:
         else:
             signup.password = UserPassword.generate_password_hash(signup.password)
             user = await self._repository.create(signup)
-
+            
         key = f"signup_{user.phone_number}"
 
         if await self._redis_repository.get(key):
