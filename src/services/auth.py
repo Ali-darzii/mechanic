@@ -87,7 +87,7 @@ class AuthService:
         if cache_token is None or int(cache_token) != signup.token:
             raise invalid_token
 
-        self._repository.user_status(user, True)
+        user = await self._repository.user_status(user, True)
 
         encode = {
             "sub": user.phone_number,
@@ -151,8 +151,14 @@ class AuthService:
             CreateRevokeToken(jti=jti, user_id=user.id)
         )
 
-        access_token = jwt.create_token(user, TokenType.access_token)
-        refresh_token = jwt.create_token(user, TokenType.refresh_token)
+        encode = {
+            "sub": user.phone_number,
+            "role": user.role,
+            "is_active": user.is_active,
+        }
+
+        access_token = jwt.create_token(encode, TokenType.access_token)
+        refresh_token = jwt.create_token(encode, TokenType.refresh_token)
         return TokenOut(
             access_token=access_token, refresh_token=refresh_token, user_id=user.id
         )
@@ -160,20 +166,20 @@ class AuthService:
     async def verify_token(self, access_token: str) -> TokenVerifyOut:
         jwt.verify_token(access_token, TokenType.access_token)
 
-        access_token = jwt.normilize_token(access_token)
+        access_token = jwt.normalize_token(access_token)
 
         return TokenVerifyOut(
             access_token=access_token, token_type=TokenType.access_token
         )
 
     async def revoke_token(self, refresh_token: str, user: UserModel) -> None:
-        payload = jwt.verify_token(refresh_token, TokenType.refresh_token)
+        payload = payload = jwt.verify_token(refresh_token, TokenType.refresh_token)
         jti = payload.get("jti")
 
         if not jti or await self._token_repository.is_revoked_token(jti):
             raise jwt.INVALID_TOKEN
 
-        await self._revoked_token_repository.create(
+        await self._token_repository.create(
             CreateRevokeToken(jti=jti, user_id=user.id)
         )
 

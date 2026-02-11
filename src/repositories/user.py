@@ -21,6 +21,8 @@ class UserRepository(SqlRepository):
         self.db.add(db_obj)
         await self.db.commit()
 
+        return db_obj
+
     async def reset_password(self, db_obj: UserModel, password: str) -> UserModel:
         db_obj.password = password
 

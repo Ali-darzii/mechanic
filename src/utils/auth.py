@@ -33,7 +33,7 @@ class Jwt(metaclass=SingletonMeta):
     
     INVALID_TOKEN = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail={"detail": "Session has been expired."}
+        detail="Session has been expired."
     )
 
     def normalize_token(self, token: str) -> str:

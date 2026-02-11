@@ -32,9 +32,7 @@ async def signup_verify_otp(
 
 
 @router.post("/token", response_model=TokenOut, status_code=status.HTTP_200_OK)
-@limiter.limit("3/minute")
 async def login(
-    request: Request,
     login: Login,
     service: AuthService = Depends()
 ) -> TokenOut:
@@ -42,9 +40,7 @@ async def login(
 
 
 @router.post("/token/refresh", response_model=TokenOut, status_code=status.HTTP_200_OK)
-@limiter.limit("1/minute")
 async def refresh_token(
-    request: Request,
     refresh_token: str = Body(..., embed=True),
     service: AuthService = Depends()
 ) -> TokenOut:
