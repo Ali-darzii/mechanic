@@ -1,5 +1,7 @@
+from enum import Enum
+
 from geoalchemy2 import Geometry
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey, func
 from sqlalchemy.orm import relationship
 
 from src.models.base import Base
@@ -15,3 +17,7 @@ class Mechanic(Base):
     
     user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True, unique=True)
     user = relationship("User", back_populates="mechanic")
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    requests = relationship("MechanicRequest", back_populates="mechanic")

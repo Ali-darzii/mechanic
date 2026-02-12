@@ -7,7 +7,7 @@ from fastapi import Depends, HTTPException, status
 
 from src.repositories.permission import MechanicPermissionRepository
 from src.repositories.user import UserRepository
-from src.schemas.permission import CreateMechanicPermission, MechanicPermissionOut, UpdateMechanicPermission
+from src.schemas.permission import CreateMechanicPermission, MechanicPermissionOut
 
 class MechanicPermissionService:
 
@@ -17,7 +17,9 @@ class MechanicPermissionService:
 
 
     def generate_random_string(self, length: int = 50) -> str:
-        characters = string.ascii_letters + string.digits
+        """ with string.punctuation gonna be too complicated"""
+        punctuation = "@#$%"
+        characters = string.digits + string.ascii_letters + punctuation
         return ''.join(secrets.choice(characters) for _ in range(length))
 
 

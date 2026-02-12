@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from src.models.user import User as UserModel
+from src.models.user import User as UserModel, UserRole
 from src.repositories.base import SqlRepository
 
 
@@ -44,3 +44,12 @@ class UserRepository(SqlRepository):
 
         self.db.add(db_obj)
         await self.db.commit()
+
+    async def chenge_user_role(self, db_obj: UserModel, role: UserRole) -> UserModel:
+        db_obj.role = role
+
+        self.db.add(db_obj)
+        await self.db.commit()
+        await self.db.refresh(db_obj)
+
+        return db_obj
