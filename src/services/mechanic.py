@@ -56,14 +56,13 @@ class MechanicService:
             True
         )
 
-        if user.role != UserRole.admin:
-            await self._user_repository.chenge_user_role(user, UserRole.mechanic)
+        await self._user_repository.change_user_role(user, UserRole.mechanic)
 
         return db_obj
 
     async def update(self, mechanic: UpdateMechanic, user: UserModel, partial: bool) -> MechanicOut:
-        db_obj = user.mechanic
-        if not db_obj:
+        db_obj = await self._repository.get_by_user_id(user.id)
+        if db_obj is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Mechanic not found."
@@ -76,6 +75,15 @@ class MechanicService:
     async def list_all(self, limit: int, offset: int) -> List[MechanicOut]:
         return await self._repository.list_all(limit, offset)
 
+    
+    async def delete(self, user: UserModel) -> None:
+        db_obj = await self._repository.get_by_user_id(user.id)
+        if db_obj is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Mechanic not found."
+            )
+        
+        await self._user_repository.change_user_role(user, UserRole.user)
 
-    async def get_by_id(self, pk) ->  MechanicOut:
-        return await self._repository.get_by_id(pk)
+        await self._repository.delete(db_obj)

@@ -41,6 +41,7 @@ class UpdateMechanic(BaseModel):
     
 
 class MechanicOut(BaseModel):
+    id: int
     name: str
     description: str 
     geom: List[float]

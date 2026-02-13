@@ -6,7 +6,7 @@ from src.models.base import Base
 class MechanicPermission(Base):
     __tablename__ = "mechanic_permission"
 
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
 
     key = Column(String(100), unique=True, index=True, nullable=False)
     is_used = Column(Boolean, default=False)

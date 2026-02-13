@@ -70,6 +70,9 @@ class AuthService:
         else:
             token = self.OTP_token()
             await self._redis_repository.set(key, token, setting.OTP_EXPIRE)
+            
+            if setting.DEBUG:
+                print(token)
             send_sms.delay(user.phone_number, f"`Mechanic` one time password: {token}")
 
     async def signup_verify_otp(self, signup: SignupVerifyOTP) -> TokenOut:

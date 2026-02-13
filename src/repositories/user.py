@@ -45,7 +45,7 @@ class UserRepository(SqlRepository):
         self.db.add(db_obj)
         await self.db.commit()
 
-    async def chenge_user_role(self, db_obj: UserModel, role: UserRole) -> UserModel:
+    async def change_user_role(self, db_obj: UserModel, role: UserRole) -> UserModel:
         db_obj.role = role
 
         self.db.add(db_obj)

@@ -15,7 +15,7 @@ class UserRole(int, Enum):
 class User(Base):
     __tablename__ = "user"
 
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
 
     phone_number = Column(String(11), nullable=False, unique=True, index=True)
     password = Column(String(128), nullable=False)
@@ -29,5 +29,7 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    mechanic_keys = relationship("MechanicPermission", back_populates="user")
-    mechanic = relationship("Mechanic", back_populates="user")
+    mechanic_keys = relationship("MechanicPermission", back_populates="user", cascade="all, delete-orphan")
+    mechanic = relationship("Mechanic", back_populates="user", cascade="all, delete-orphan")
+    cars = relationship("Car", back_populates="user", cascade="all, delete-orphan")
+    mechanic_comments = relationship("MechanicComment", back_populates="user", cascade="all, delete-orphan")

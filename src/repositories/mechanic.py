@@ -13,4 +13,4 @@ class MechanicRepository(SqlRepository):
         result = await self.db.execute(
             select(self.model).where(self.model.user_id == user_id)
         )
-        return result.one_or_none()
+        return result.scalar_one_or_none()

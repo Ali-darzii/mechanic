@@ -15,25 +15,16 @@ router = APIRouter(
 async def create_mechanic(
     mechanic: CreateMechanic,
     service: MechanicService = Depends(),
-    user: UserModel = Depends(get_current_user)
+    user: UserModel = Depends(get_current_user_with_permission([UserRole.user]))
 ) -> MechanicOut:
     return await service.create(mechanic, user)
-
-
-@router.put("", response_model=MechanicOut, status_code=status.HTTP_201_CREATED)
-async def update_mechanic(
-    mechanic: UpdateMechanic,
-    service: MechanicService = Depends(),
-    user: UserModel = Depends(get_current_user_with_permission([UserRole.mechanic, UserRole.admin]))
-) -> MechanicOut:
-    return await service.update(mechanic, user, False)
 
 
 @router.patch("", response_model=MechanicOut, status_code=status.HTTP_201_CREATED)
 async def partial_update_mechanic(
     mechanic: UpdateMechanic,
     service: MechanicService = Depends(),
-    user: UserModel = Depends(get_current_user_with_permission([UserRole.mechanic, UserRole.admin]))
+    user: UserModel = Depends(get_current_user_with_permission([UserRole.mechanic]))
 ) -> MechanicOut:
     return await service.update(mechanic, user, True)
 
@@ -47,5 +38,9 @@ async def list_all_mechanic(
 ) -> List[MechanicOut]:
     return await service.list_all(limit, offset)
 
-
-# TODO: Get By Id with cars for only 
+@router.delete("", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_mechanic(
+    service: MechanicService = Depends(),
+    user: UserModel = Depends(get_current_user_with_permission([UserRole.mechanic]))
+):
+    await service.delete(user)
